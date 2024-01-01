@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
   private Switch gpuSwitch;
   private UIHandler UIhandler;
 
+  private static final int MAX_BITMAP_SIZE = 100 * 1024 * 1024; // 100 MB 最大的图片 trying to draw too large(159907840bytes) bitmap.
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

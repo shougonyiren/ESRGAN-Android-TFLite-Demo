@@ -1,2 +1,21 @@
 rootProject.name = 'TFLite Super Resolution Demo App'
 include ':app'
+include ':super_resolution_image'
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        maven {
+            url "https://maven.aliyun.com/repository/google"
+        }
+        maven {
+            url "https://maven.aliyun.com/repository/public"
+        }
+        maven {
+            url "https://maven.aliyun.com/repository/jcenter"
+        }
+        google()
+        mavenCentral()
+        maven{url"https://jitpack.io"}
+    }
+}

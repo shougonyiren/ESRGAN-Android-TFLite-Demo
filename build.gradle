@@ -4,6 +4,11 @@
 buildscript {
 
     repositories {
+        maven{ url 'https://maven.aliyun.com/nexus/content/groups/public/'}
+        maven{ url 'https://maven.aliyun.com/repository/google'}
+        maven{ url 'https://maven.aliyun.com/repository/gradle-plugin'}
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
         google()
         mavenCentral()
         maven { url "https://www.jitpack.io" }
@@ -11,11 +16,17 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.2'
         classpath 'de.undercouch:gradle-download-task:4.1.1'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0'
     }
 }
 
 allprojects {
     repositories {
+        maven{ url 'https://maven.aliyun.com/nexus/content/groups/public/'}
+        maven{ url 'https://maven.aliyun.com/repository/google'}
+        maven{ url 'https://maven.aliyun.com/repository/gradle-plugin'}
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
         google()
         mavenCentral()
         maven { url "https://jitpack.io" }
