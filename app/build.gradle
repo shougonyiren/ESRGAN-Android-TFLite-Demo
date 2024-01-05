@@ -71,6 +71,23 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
 
+    //图片加载库
     implementation("io.coil-kt:coil:2.2.2")
 
+    //工具类
+    implementation("com.blankj:utilcodex:1.31.1")
+    //kotlinx-coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+
+
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
+
+    //华为
+    implementation 'com.huawei.hiai.hiai-engine:huawei-hiai-vision:11.0.2.300'
+    implementation 'com.huawei.hiai.hiai-engine:huawei-hiai-pdk:11.0.2.300'
+    implementation 'com.huawei.hiai.hiai-engine:huawei-hiai-nlu:11.0.2.300'
+    implementation 'com.huawei.hiai.hiai-engine:huawei-hiai-asr:11.0.2.300'
 }

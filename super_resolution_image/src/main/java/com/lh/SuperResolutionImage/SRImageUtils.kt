@@ -1,18 +1,27 @@
 import android.content.Context
+import android.util.Log
 import android.widget.ImageView
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.LogUtils
-import kotlinx.coroutines.flow.Flow
+import com.lh.SuperResolutionImage.AssetsUtil
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
-import java.net.URL
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.map
+import java.io.FileInputStream
+import java.io.IOException
+import java.nio.MappedByteBuffer
+import java.nio.channels.FileChannel
+
 class SRImageUtils{
 
     companion object{
+        fun init(context: Context){
+             this.context = context
+        }
+
+        private lateinit var context: Context
         private const val MAX_BITMAP_SIZE =
             100 * 1024 * 1024 // 100 MB 最大的图片 trying to draw too large(159907840bytes) bitmap.
 
@@ -61,7 +70,51 @@ class SRImageUtils{
 
             }
         }
+        private var model: MappedByteBuffer? = null
+        private const val superResolutionNativeHandle: Long = 0
+        private external fun superResolutionFromJNI(
+            superResolutionNativeHandle: Long,
+            lowResRGB: IntArray
+        ): IntArray?
 
+        private external fun initWithByteBufferFromJNI(
+            modelBuffer: MappedByteBuffer,
+            useGPU: Boolean
+        ): Long
+
+        private external fun deinitFromJNI(superResolutionNativeHandle: Long)
+
+        private fun initTFLiteInterpreter(useGPU: Boolean): Long {
+            try {
+                model = loadModelFile()
+            } catch (e: IOException) {
+                LogUtils.e("Fail to load model", e)
+            }
+            return initWithByteBufferFromJNI(model!!, useGPU)
+        }
+
+        private fun deinit() {
+            deinitFromJNI(superResolutionNativeHandle)
+        }
+
+        @Throws(IOException::class)
+        private fun loadModelFile(): MappedByteBuffer? {
+            AssetsUtil.getAssetFileDescriptorOrCached(
+                context,
+                MODEL_NAME
+            ).use { fileDescriptor ->
+                FileInputStream(fileDescriptor.fileDescriptor).use { inputStream ->
+                    val fileChannel: FileChannel = inputStream.channel
+                    val startOffset: Long = fileDescriptor.startOffset
+                    val declaredLength: Long = fileDescriptor.declaredLength
+                    return fileChannel.map(
+                        FileChannel.MapMode.READ_ONLY,
+                        startOffset,
+                        declaredLength
+                    )
+                }
+            }
+        }
     }
 
 }
