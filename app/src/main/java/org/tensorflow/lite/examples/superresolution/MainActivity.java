@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     private PhotoView mImageViewSrc;
 
     private TextView mHuaweiTxtViewResult;
+    private TextView mHuaweiTxtTimeView;
     private PhotoView srPhotoView;
     private TextView selectedImageTextView;
     private TextView progressTextView;
@@ -129,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
 
         //huawei
         mHuaweiTxtViewResult = findViewById(R.id.HuaweiTxtViewResult);
-        mImageViewSR= findViewById(R.id.huawei_image);
+        mHuaweiTxtTimeView = findViewById(R.id.HuaweiTxtTimeView);
+        mImageViewSR = findViewById(R.id.huawei_image);
         mImageViewSrc = findViewById(R.id.huawei_src);
         final Button huaweiSuperResolutionButton = findViewById(R.id.upsample_huawei_button);
 
@@ -448,8 +450,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_REQUEST = 0x0010;
 
     private static final int TYPE_SHOW_SRC_IMG = 1;
-    private static final int TYPE_SHOW_SR_IMG =2;
-
+    private static final int TYPE_SHOW_SR_IMG = 2;
+    private static final int TYPE_SHOW_SR_TEXT = 3;
     private Handler mHander = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -483,6 +485,16 @@ public class MainActivity extends AppCompatActivity {
                     ImageResult result = (ImageResult) msg.obj;
                     srBitmap = result.getBitmap();
                     mImageViewSR.setImageBitmap(srBitmap);
+                    break;
+                }
+                case TYPE_SHOW_SR_TEXT: {
+                    if (msg.obj == null) {
+                        Log.e(TAG, "SISR result is null!");
+
+                        mHuaweiTxtViewResult.setText("SISR result is null!");
+                        return;
+                    }
+                    mHuaweiTxtTimeView.setText(msg.obj.toString());
                     break;
                 }
                 default:
@@ -531,7 +543,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // 准备输入图片
                     // Prepare input bitmap
-                    VisionImage image = VisionImage.fromBitmap(srBitmap);
+                    VisionImage image = VisionImage.fromBitmap(selectedLRBitmap);
 
                     // 创建超分对象
                     // Create SR object
@@ -553,11 +565,15 @@ public class MainActivity extends AppCompatActivity {
                     // 执行超分
                     // Run SR
                     ImageResult result = new ImageResult();
-                    long startTime = System.currentTimeMillis();
-                    int resultCode = superResolution.doSuperResolution(image, result, visionCallback);
-                    long endTime = System.currentTimeMillis(); // 获取结束时间
-                    Log.e("TestTime", "Runtime: " + (endTime - startTime));
 
+                    long startTime = SystemClock.uptimeMillis();
+                    int resultCode = superResolution.doSuperResolution(image, result, visionCallback);
+                    long endTime = SystemClock.uptimeMillis(); // 获取结束时间
+                    Log.e("TestTime", "Runtime: " + (endTime - startTime));
+                    Message msg = new Message();
+                    msg.what = TYPE_SHOW_SR_TEXT;
+                    msg.obj = "Runtime: " + (endTime - startTime);
+                    mHander.sendMessage(msg);
                     if (resultCode == 700) {
                         Log.d(TAG, "Wait for result.");
 
@@ -583,10 +599,10 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
 
-                    Message msg = new Message();
-                    msg.what = TYPE_SHOW_SR_IMG;
-                    msg.obj = result;
-                    mHander.sendMessage(msg);
+                    Message msg1 = new Message();
+                    msg1.what = TYPE_SHOW_SR_IMG;
+                    msg1.obj = result;
+                    mHander.sendMessage(msg1);
                 }
             }).start();
 

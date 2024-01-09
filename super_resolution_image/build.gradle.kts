@@ -5,10 +5,10 @@ plugins {
 
 android {
     namespace = "com.lh.SuperResolutionImage"
-    compileSdkVersion(31)
+    compileSdkVersion(33)
 
     defaultConfig {
-        minSdkVersion(24)
+        minSdkVersion(28)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'de.undercouch.download'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "org.tensorflow.lite.examples.superresolution"
-        minSdkVersion 21
-        targetSdkVersion 31
+        minSdkVersion 28
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         externalNativeBuild {

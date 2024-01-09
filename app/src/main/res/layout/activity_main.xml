@@ -161,19 +161,28 @@
                         android:paddingTop="10dp"
                         android:text="@string/natively_scaled_image"
                         android:textSize="14sp" />
-
-                    <com.github.chrisbanes.photoview.PhotoView
-                        android:id="@+id/huawei_src"
-                        android:layout_width="400dp"
-                        android:layout_height="400dp"
-                        android:contentDescription="@string/natively_scaled_image"
-                        android:minWidth="300dp" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/HuaweiTxtTimeView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="300dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/natively_scaled_image"
+                        android:textSize="14sp" />
                     <com.github.chrisbanes.photoview.PhotoView
                         android:id="@+id/huawei_image"
                         android:layout_width="400dp"
                         android:layout_height="400dp"
                         android:contentDescription="@string/natively_scaled_image"
                         android:minWidth="300dp" />
+                    <com.github.chrisbanes.photoview.PhotoView
+                        android:id="@+id/huawei_src"
+                        android:layout_width="400dp"
+                        android:layout_height="400dp"
+                        android:layout_marginBottom="200dp"
+                        android:contentDescription="@string/natively_scaled_image"
+                        android:minWidth="300dp" />
+
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
