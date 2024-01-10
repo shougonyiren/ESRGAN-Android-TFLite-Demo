@@ -1,10 +1,15 @@
-apply plugin: 'com.android.application'
-apply plugin: 'de.undercouch.download'
+plugins {
+    id 'com.android.application'
+    id 'de.undercouch.download'
+    id 'org.jetbrains.kotlin.android'
+}
+
 
 android {
-    compileSdkVersion 33
-
+    compileSdk 34
+    namespace "org.tensorflow.lite.examples.superresolution"
     defaultConfig {
+
         applicationId "org.tensorflow.lite.examples.superresolution"
         minSdkVersion 28
         targetSdkVersion 33
@@ -57,6 +62,12 @@ android {
             version "3.6.0"
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 // import download tasks
@@ -64,10 +75,13 @@ project.ext.ASSET_DIR = projectDir.toString() + '/src/main/assets'
 
 apply from: 'download.gradle'
 
+
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+
+    implementation project(':super_resolution_image')
+    implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.guava:guava:30.0-android'
-    implementation 'com.android.support:design:28.0.0'
+//    implementation 'com.android.support:design:28.0.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
 
@@ -90,4 +104,13 @@ dependencies {
     implementation 'com.huawei.hiai.hiai-engine:huawei-hiai-pdk:11.0.2.300'
     implementation 'com.huawei.hiai.hiai-engine:huawei-hiai-nlu:11.0.2.300'
     implementation 'com.huawei.hiai.hiai-engine:huawei-hiai-asr:11.0.2.300'
+
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.6'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.6'
+
+
+    implementation "io.github.cymchad:BaseRecyclerViewAdapterHelper:4.0.3"
 }

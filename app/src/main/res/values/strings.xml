@@ -13,4 +13,8 @@
     <string name="save">Save</string>
     <string name="open">Open</string>
     <string name="share">Share</string>
+    <string name="title_activity_hua_wei_sractivity">HuaWeiSRActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

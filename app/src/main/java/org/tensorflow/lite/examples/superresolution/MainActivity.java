@@ -512,98 +512,99 @@ public class MainActivity extends AppCompatActivity {
             isRunning = true;
             mHuaweiTxtViewResult.setText("Begin to run SISR.");
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+            new Thread(() -> {
 
-                    if (selectedLRBitmap == null) {
-                        Log.e(TAG, "Input Bitmap is null!");
+                if (selectedLRBitmap == null) {
+                    Log.e(TAG, "Input Bitmap is null!");
 
-                        mHuaweiTxtViewResult.setText("Input Bitmap is null!");
-                        return;
-                    }
-
-                    Log.d(TAG, "Start SISR");
-
-                    // 连接AI引擎
-                    // Connect to AI Engine
-                    VisionBase.init(getApplicationContext(), ConnectManager.getInstance().getmConnectionCallback());
-
-                    if (!ConnectManager.getInstance().isConnected()) {
-                        ConnectManager.getInstance().waitConnect();
-                    }
-
-                    if (!ConnectManager.getInstance().isConnected()) {
-                        Log.e(TAG, "Can't connect to server.");
-
-                        mHuaweiTxtViewResult.setText("Can't connect to server!");
-
-                        return;
-                    }
-
-                    // 准备输入图片
-                    // Prepare input bitmap
-                    VisionImage image = VisionImage.fromBitmap(selectedLRBitmap);
-
-                    // 创建超分对象
-                    // Create SR object
-                    ImageSuperResolution superResolution = new ImageSuperResolution(getBaseContext());
-
-                    // 准备超分配置
-                    // Prepare SR configuration
-                    SISRConfiguration paras = new SISRConfiguration
-                            .Builder()
-                            .setProcessMode(VisionConfiguration.MODE_OUT)
-                            .build();
-                    paras.setScale(scale);
-                    paras.setQuality(SISRConfiguration.SISR_QUALITY_HIGH);
-
-                    // 设置超分
-                    // Config SR
-                    superResolution.setSuperResolutionConfiguration(paras);
-
-                    // 执行超分
-                    // Run SR
-                    ImageResult result = new ImageResult();
-
-                    long startTime = SystemClock.uptimeMillis();
-                    int resultCode = superResolution.doSuperResolution(image, result, visionCallback);
-                    long endTime = SystemClock.uptimeMillis(); // 获取结束时间
-                    Log.e("TestTime", "Runtime: " + (endTime - startTime));
-                    Message msg = new Message();
-                    msg.what = TYPE_SHOW_SR_TEXT;
-                    msg.obj = "Runtime: " + (endTime - startTime);
-                    mHander.sendMessage(msg);
-                    if (resultCode == 700) {
-                        Log.d(TAG, "Wait for result.");
-
-                        return;
-                    } else if (resultCode != 0) {
-                        Log.e(TAG, "Failed to run super-resolution, return : " + resultCode);
-
-                        mHuaweiTxtViewResult.setText("Failed to run SISR!");
-                        return;
-                    }
-
-                    if (result == null) {
-                        Log.e(TAG, "Result is null!");
-
-                        mHuaweiTxtViewResult.setText("SISR result is null!");
-
-                        return;
-                    }
-                    if (result.getBitmap() == null) {
-                        Log.e(TAG, "Result bitmap is null!");
-
-                        mHuaweiTxtViewResult.setText("SISR result has null bitmap!");
-                        return;
-                    }
-
-                    Message msg1 = new Message();
-                    msg1.what = TYPE_SHOW_SR_IMG;
-                    msg1.obj = result;
-                    mHander.sendMessage(msg1);
+                    mHuaweiTxtViewResult.setText("Input Bitmap is null!");
+                    return;
                 }
+
+                Log.d(TAG, "Start SISR");
+
+                // 连接AI引擎
+                // Connect to AI Engine
+                VisionBase.init(getApplicationContext(), ConnectManager.getInstance().getmConnectionCallback());
+
+                if (!ConnectManager.getInstance().isConnected()) {
+                    ConnectManager.getInstance().waitConnect();
+                }
+
+                if (!ConnectManager.getInstance().isConnected()) {
+                    Log.e(TAG, "Can't connect to server.");
+
+                    mHuaweiTxtViewResult.setText("Can't connect to server!");
+
+                    return;
+                }
+
+                // 准备输入图片
+                // Prepare input bitmap
+                VisionImage image = VisionImage.fromBitmap(selectedLRBitmap);
+
+                // 创建超分对象
+                // Create SR object
+                ImageSuperResolution superResolution = new ImageSuperResolution(getBaseContext());
+
+                // 准备超分配置
+                // Prepare SR configuration
+                // 构造和设置超分参数。
+                // 其中，MODE_OUT指定使用进程间通信模式，如果该参数为MODE_IN，则程序将以同进程模式运行。
+                // scale指定了超分倍数，
+                // SISR_QUALITY_HIGH参数则指定了超分质量。最后，将配置好的参数设置到超分对象中。
+                SISRConfiguration paras = new SISRConfiguration
+                        .Builder()
+                        .setProcessMode(VisionConfiguration.MODE_OUT)
+                        .build();
+                paras.setScale(scale);
+                paras.setQuality(SISRConfiguration.SISR_QUALITY_HIGH);
+
+                // 设置超分
+                // Config SR
+                superResolution.setSuperResolutionConfiguration(paras);
+
+                // 执行超分
+                // Run SR
+                ImageResult result = new ImageResult();
+
+                long startTime = SystemClock.uptimeMillis();
+                int resultCode = superResolution.doSuperResolution(image, result, visionCallback);
+                long endTime = SystemClock.uptimeMillis(); // 获取结束时间
+                Log.e("TestTime", "Runtime: " + (endTime - startTime));
+                Message msg = new Message();
+                msg.what = TYPE_SHOW_SR_TEXT;
+                msg.obj = "Runtime: " + (endTime - startTime);
+                mHander.sendMessage(msg);
+                if (resultCode == 700) {
+                    Log.d(TAG, "Wait for result.");
+
+                    return;
+                } else if (resultCode != 0) {
+                    Log.e(TAG, "Failed to run super-resolution, return : " + resultCode);
+
+                    mHuaweiTxtViewResult.setText("Failed to run SISR!");
+                    return;
+                }
+
+                if (result == null) {
+                    Log.e(TAG, "Result is null!");
+
+                    mHuaweiTxtViewResult.setText("SISR result is null!");
+
+                    return;
+                }
+                if (result.getBitmap() == null) {
+                    Log.e(TAG, "Result bitmap is null!");
+
+                    mHuaweiTxtViewResult.setText("SISR result has null bitmap!");
+                    return;
+                }
+
+                Message msg1 = new Message();
+                msg1.what = TYPE_SHOW_SR_IMG;
+                msg1.obj = result;
+                mHander.sendMessage(msg1);
             }).start();
 
             isRunning = false;

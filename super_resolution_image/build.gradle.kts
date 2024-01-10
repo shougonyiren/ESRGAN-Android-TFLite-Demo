@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.lh.SuperResolutionImage"
-    compileSdkVersion(33)
+    compileSdkVersion(34)
 
     defaultConfig {
         minSdkVersion(28)
@@ -33,10 +33,11 @@ android {
 }
 
 dependencies {
-
+//    implementation(project(mapOf("path" to ":app"))) 不依赖主项目
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.8.0")
+    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("com.google.android.material:material:1.6.0")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -52,4 +53,11 @@ dependencies {
 
 
     implementation("com.google.guava:guava:30.0-android")
+
+
+    //华为
+    implementation ("com.huawei.hiai.hiai-engine:huawei-hiai-vision:11.0.2.300")
+    implementation ("com.huawei.hiai.hiai-engine:huawei-hiai-pdk:11.0.2.300")
+    implementation ("com.huawei.hiai.hiai-engine:huawei-hiai-nlu:11.0.2.300")
+    implementation ("com.huawei.hiai.hiai-engine:huawei-hiai-asr:11.0.2.300")
 }
