@@ -2,10 +2,13 @@ package common.adapter
 
 
 import android.content.Context
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.request.CachePolicy
+import com.blankj.utilcode.util.LogUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.lh.SuperResolutionImage.HuaWeiObsUtils
 import org.tensorflow.lite.examples.superresolution.R
@@ -22,7 +25,7 @@ import org.tensorflow.lite.examples.superresolution.databinding.RcCommonImageBin
  */
 class ImageListAdapter(data: List<String>) : BaseQuickAdapter<String,ImageListAdapter.VH>(data) {
 
-   // var listener: PictureClickListener? = null
+    var listener: PictureClickListener? = null
     class VH(
         parent: ViewGroup,
         val binding: RcCommonImageBinding = RcCommonImageBinding.inflate(
@@ -39,13 +42,46 @@ class ImageListAdapter(data: List<String>) : BaseQuickAdapter<String,ImageListAd
      */
     override fun onBindViewHolder(holder: ImageListAdapter.VH, position: Int, item: String?) {
         //holder.binding.image.loadSRImage(
+       LogUtils.d("onBindViewHolder position"+position.toString()+" item:" +item.toString())
         item?.let {
-            var url= HuaWeiObsUtils.thumbnailFromUrl(item,50,50)
+            var url= HuaWeiObsUtils.thumbnailFromUrl(item,200,200)
+            var startTime :Long= 0
+            var endTime:Long= 0
             holder.binding.image.load(url){
                 error(R.mipmap.ic_launcher)
+                memoryCachePolicy(CachePolicy.DISABLED)
+                networkCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.DISABLED)
+                listener(
+                    onStart = { request ->
+                        startTime = SystemClock.uptimeMillis()
+                        LogUtils.d("TestTime", "onStart networkThumbnail" + startTime)
+                    },
+                    onError = { request, throwable ->
+                        endTime = SystemClock.uptimeMillis() // 获取结束时间
+                        LogUtils.e(
+                            "TestTime",
+                            "onError networkThumbnail Runtime: " + (endTime - startTime)+"throwable: " + throwable.throwable.toString()
+                        )
+                    },
+                    onCancel = { request ->
+                        endTime = SystemClock.uptimeMillis() // 获取结束时间
+                        LogUtils.e(
+                            "TestTime",
+                            "onCancel networkThumbnail Runtime: " + (endTime - startTime)
+                        )
+                    },
+                    onSuccess = { request, metadata ->
+                        endTime = SystemClock.uptimeMillis() // 获取结束时间
+                        LogUtils.e(
+                            "TestTime",
+                            "onSuccess networkThumbnail Runtime: " + (endTime - startTime)
+                        )
+                    }
+                )
             }
             holder.binding.image.setOnClickListener {
-              //  listener?.onClick(item,position)
+                listener?.onClick(item,position)
             }
         }
     }
@@ -58,14 +94,12 @@ class ImageListAdapter(data: List<String>) : BaseQuickAdapter<String,ImageListAd
         return VH(parent)
     }
 
-//    fun setPictureClickListener(addListener: PictureClickListener) {
-//        this.listener = addListener
-//    }
-//
-//    interface PictureClickListener {
-//
-//        fun onClick(path: String,  position: Int)
-//
-//        fun onDelete(path: String, position: Int)
-//    }
+    fun setPictureClickListener(addListener: PictureClickListener) {
+        this.listener = addListener
+    }
+
+    interface PictureClickListener {
+        fun onClick(path: String,  position: Int)
+
+    }
 }

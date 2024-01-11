@@ -21,6 +21,7 @@ import com.lh.SuperResolutionImage.SRHuaweiImage
 class SRTransformation(var url: String, var SISR_SCALE: Float, var context: Context) :
     Transformation {
     init {
+        LogUtils.d("SRTransformation url: "+url +" SISR_SCALE:"+ SISR_SCALE+"");
         require(!TextUtils.isEmpty(url) && SISR_SCALE >= 0) {
             "SRTransformation 数据不对 TextUtils.isEmpty(url) ｜｜ SISR_SCALE < 0"
         }
@@ -48,8 +49,8 @@ class SRTransformation(var url: String, var SISR_SCALE: Float, var context: Cont
         if (SRHuaweiImage.isDebug) {
             startTime = SystemClock.uptimeMillis()
         }
-        // 华为引擎不能转换过大的图片 目前过大的图片参数传过来 SISR_SCALE是1倍
-        if (SISR_SCALE < 1.0f) {
+        //todo 华为引擎不能转换过大的图片 目前过大的图片参数传过来 SISR_SCALE是1倍
+        if (SISR_SCALE <= 1.0f) {
             return input
         }
         var outBitmap = SRHuaweiImage.SRImage(input, context, SISR_SCALE)

@@ -5,20 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
-
-    <TextView
-        android:id="@+id/text_home"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,24 +30,6 @@
                 android:layout_height="wrap_content"
                 android:text="华为AI引擎加载" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/HuaweiTxtViewResult"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="300dp"
-                android:paddingTop="10dp"
-                android:text="@string/natively_scaled_image"
-                android:textSize="14sp" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/HuaweiTxtTimeView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="300dp"
-                android:paddingTop="10dp"
-                android:text="时间"
-                android:textSize="14sp" />
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,14 +44,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
-
             <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/network_image"
                 android:layout_width="400dp"
-                android:layout_height="400dp"
-                android:contentDescription="网络原图"
-                android:minWidth="300dp" />
-
+                android:layout_height="200dp"
+                android:contentDescription="网络原图" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,9 +66,8 @@
             <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/huawei_image"
                 android:layout_width="400dp"
-                android:layout_height="400dp"
-                android:contentDescription="加参数+华为SR后的图"
-                android:minWidth="300dp" />
+                android:layout_height="200dp"
+                android:contentDescription="加参数+华为SR后的图" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -122,10 +86,9 @@
             <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/network_thumbnail_image"
                 android:layout_width="400dp"
-                android:layout_height="400dp"
+                android:layout_height="200dp"
                 android:contentDescription="加参数后的图"
-                android:layout_marginBottom="100dp"
-                android:minWidth="300dp" />
+                android:layout_marginBottom="100dp" />
         </LinearLayout>
     </ScrollView>
 

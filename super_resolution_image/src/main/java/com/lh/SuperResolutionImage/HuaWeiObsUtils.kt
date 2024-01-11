@@ -1,6 +1,7 @@
 package com.lh.SuperResolutionImage
 
 import android.text.TextUtils
+import com.blankj.utilcode.util.LogUtils
 
 /**
 
@@ -19,6 +20,7 @@ class HuaWeiObsUtils {
             }
             val mUrl =
                 url.plus("?x-image-process=image/resize,w_${width},h_${height}/quality,Q_${quality}")
+            LogUtils.d("thumbnailFromUrl: " +mUrl)
             return mUrl;
         }
 

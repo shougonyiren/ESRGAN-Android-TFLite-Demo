@@ -6,6 +6,9 @@ import android.os.SystemClock
 import android.util.Log
 import android.widget.ImageView
 import coil.load
+import coil.request.CachePolicy
+import coil.request.ImageRequest
+import coil.size.ViewSizeResolver
 import com.blankj.utilcode.util.LogUtils
 import com.huawei.hiai.vision.common.VisionBase
 import com.huawei.hiai.vision.common.VisionImage
@@ -79,13 +82,14 @@ class SRHuaweiImage {
 
         //默认图片来源华为云  使用华为obs
         //分为三部分 数据处理 数据加载 超分
-        fun ImageView.loadSRImage(
+        fun ImageView.loadSRThumbnailImage(
             context: Context,
             url: String,
             width: Int,
             height: Int,
             quality: Int? = 100
         ) {
+            LogUtils.d("url: " + url+" width: " + width+" height: "+height+" quality: " + quality)
             var reductionWidth = width?.div(3);
             var reductionHeight = height?.div(3);
             var reductionQuality = quality;
@@ -98,6 +102,63 @@ class SRHuaweiImage {
                 scale = SISRConfiguration.SISR_SCALE_1X
             }
             this.load(url) {
+                transformations(
+                    SRTransformation(
+                        url,
+                        scale,context
+                    )
+                )
+            }
+        }
+
+        //默认图片来源华为云  使用华为obs
+        //分为三部分 数据处理 数据加载 超分
+        //todo 可以传listener
+        fun ImageView.loadSRImage(
+            context: Context,
+            url: String,
+            width: Int,
+            height: Int,
+            quality: Int? = 100
+
+        ) {
+            LogUtils.d("url: " + url+" width: " + width+" height: "+height+" quality: " + quality)
+//            var reductionWidth = width?.div(3);
+//            var reductionHeight = height?.div(3);
+            var reductionQuality = quality;
+            var url = url
+            var scale = SISRConfiguration.SISR_SCALE_1X
+            if (SRMaxWidth > width!! && SRMaxHeight > height!!) {
+                scale = SISRConfiguration.SISR_SCALE_3X
+                url = HuaWeiObsUtils.thumbnailFromUrl(url, width!!, height!!)
+            } else {
+                scale = SISRConfiguration.SISR_SCALE_1X
+            }
+            var startTime :Long= 0
+            var endTime:Long= 0
+            this.load(url) {
+                memoryCachePolicy(CachePolicy.DISABLED)
+                networkCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.DISABLED)
+                size(ViewSizeResolver(this@loadSRImage))
+                listener(
+                    onStart = { request ->
+                        startTime = SystemClock.uptimeMillis()
+                        LogUtils.d("TestTime", "onStart huaweiImage"+startTime)
+                    },
+                    onError = { request, throwable ->
+                        endTime = SystemClock.uptimeMillis() // 获取结束时间
+                        LogUtils.e("TestTime", "onError huaweiImage Runtime: " + (endTime - startTime)+"throwable: " + throwable.throwable.toString())
+                    },
+                    onCancel = { request ->
+                        endTime = SystemClock.uptimeMillis() // 获取结束时间
+                        LogUtils.e("TestTime", "onCancel huaweiImage Runtime: " + (endTime - startTime))
+                    },
+                    onSuccess = { request, metadata ->
+                        endTime = SystemClock.uptimeMillis() // 获取结束时间
+                        LogUtils.e("TestTime", "onSuccess huaweiImage Runtime: " + (endTime - startTime))
+                    }
+                )
                 transformations(
                     SRTransformation(
                         url,
