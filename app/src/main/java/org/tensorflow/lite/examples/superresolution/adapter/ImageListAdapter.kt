@@ -100,6 +100,5 @@ class ImageListAdapter(data: List<String>) : BaseQuickAdapter<String,ImageListAd
 
     interface PictureClickListener {
         fun onClick(path: String,  position: Int)
-
     }
 }

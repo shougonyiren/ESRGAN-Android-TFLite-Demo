@@ -53,7 +53,7 @@ class SRTransformation(var url: String, var SISR_SCALE: Float, var context: Cont
         if (SISR_SCALE <= 1.0f) {
             return input
         }
-        var outBitmap = SRHuaweiImage.SRImage(input, context, SISR_SCALE)
+        var outBitmap = SRHuaweiImage.SRImageBitmap(input, context, SISR_SCALE)
         if (SRHuaweiImage.isDebug) {
             val endTime = SystemClock.uptimeMillis()
             LogUtils.e("TestTime","transform  Runtime: " + (endTime - startTime) + "startTime: " + startTime.toString() + "endTime" + endTime.toString())

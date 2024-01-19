@@ -21,6 +21,7 @@ import com.lh.SuperResolutionImage.SRHuaweiImage.Companion.loadSRImage
 import common.adapter.ImageListAdapter
 import org.tensorflow.lite.examples.superresolution.R
 import org.tensorflow.lite.examples.superresolution.databinding.FragmentHomeBinding
+import org.tensorflow.lite.examples.superresolution.test.TestUtils
 
 class HomeFragment : Fragment() {
 
@@ -52,20 +53,7 @@ class HomeFragment : Fragment() {
 //            textView.text = it
 //        }
         //  var list:MutableList<String>
-        val list = listOf(
-            "https://huawei-vr-test.obs.cn-north-4.myhuaweicloud.com/mobile_test/3dian92mb.jpg",
-            "https://image2a.5i5j.com/scm/HOUSE_CUSTOMER/aada58e53f4e4a6ead5a5457d9562848.jpg",
-            "https://huawei-vr-test.obs.cn-north-4.myhuaweicloud.com/mobile_test/169kb.jpg",
-            "https://huawei-vr-test.obs.cn-north-4.myhuaweicloud.com/mobile_test/7dian33mb.jpg",
-            "https://huawei-vr-test.obs.cn-north-4.myhuaweicloud.com/mobile_test/705kb.jpg",
-            "https://base-test-vr4cdn.5i5j.com/outputfiles/1a798326442256ac3b1e2cf095f72e48_17975/directionalPlan/NorthWest.jpg",
-            "https://base-test-vr4cdn.5i5j.com/outputfiles/1a798326442256ac3b1e2cf095f72e48_17975/directionalPlan/West.jpg",
-            "https://base-test-vr4cdn.5i5j.com/outputfiles/1a798326442256ac3b1e2cf095f72e48_17975/directionalPlan/East.jpg",
-            "https://base-test-vr4cdn.5i5j.com/outputfiles/1a798326442256ac3b1e2cf095f72e48_17975/directionalPlan/SouthWest.jpg",
-            "https://base-test-vr4cdn.5i5j.com/outputfiles/1a798326442256ac3b1e2cf095f72e48_17975/directionalPlan/South.jpg",
-            "https://base-test-vr4cdn.5i5j.com/outputfiles/1a798326442256ac3b1e2cf095f72e48_17975/directionalPlan/SouthEast.jpg",
-            "https://huawei-vr-test.obs.cn-north-4.myhuaweicloud.com/mobile_test/1dian61kb.png",
-        )
+        val list = TestUtils.list
         //"https://home.5i5j.com/static/png/values-daac8bcf.png",
         //"https://file-dmp.obs.cn-north-4.myhuaweicloud.com/portal-web/portal-web/20231128/1701165724121/419751/GONw5d636sHeBbXETYKh.png?AccessKeyId=WVQXKWAJLWTZNCOXJW2I&Expires=1704883713&Signature=GWzGSLpzRt6x5iklHeVPEnMwF1Q%3D",
         //

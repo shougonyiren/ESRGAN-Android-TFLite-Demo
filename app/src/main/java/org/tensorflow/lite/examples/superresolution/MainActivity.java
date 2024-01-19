@@ -39,7 +39,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,7 +62,7 @@ import java.io.InputStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
-import huaweisr.ConnectManager;
+import org.tensorflow.lite.examples.superresolution.huaweisr.ConnectManager;
 
 /**
  * A super resolution class to generate super resolution images from low resolution images *

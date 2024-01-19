@@ -1,4 +1,4 @@
-package huaweisr;
+package org.tensorflow.lite.examples.superresolution.huaweisr;
 
 import android.util.Log;
 

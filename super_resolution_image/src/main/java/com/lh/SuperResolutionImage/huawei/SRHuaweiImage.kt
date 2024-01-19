@@ -2,13 +2,20 @@ package com.lh.SuperResolutionImage
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.SystemClock
+import android.util.Base64
 import android.util.Log
 import android.widget.ImageView
+import coil.ImageLoader
+import coil.disk.DiskCache
 import coil.load
+import coil.memory.MemoryCache
 import coil.request.CachePolicy
-import coil.request.ImageRequest
 import coil.size.ViewSizeResolver
+import coil.util.DebugLogger
+import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.LogUtils
 import com.huawei.hiai.vision.common.VisionBase
 import com.huawei.hiai.vision.common.VisionImage
@@ -18,6 +25,7 @@ import com.huawei.hiai.vision.visionkit.image.ImageResult
 import com.huawei.hiai.vision.visionkit.image.sr.SISRConfiguration
 import com.lh.SuperResolutionImage.coilTransformation.SRTransformation
 import com.lh.SuperResolutionImage.huawei.ConnectManager
+import java.io.ByteArrayOutputStream
 
 
 /**
@@ -30,7 +38,6 @@ import com.lh.SuperResolutionImage.huawei.ConnectManager
 
  */
 class SRHuaweiImage {
-
 
 
     private var isConnected: Boolean = false
@@ -66,7 +73,7 @@ class SRHuaweiImage {
     }
 
     companion object {
-        public  var isDebug: Boolean = true
+        public var isDebug: Boolean = true
 
         @Volatile
         private var instance: SRHuaweiImage? = null
@@ -89,7 +96,7 @@ class SRHuaweiImage {
             height: Int,
             quality: Int? = 100
         ) {
-            LogUtils.d("url: " + url+" width: " + width+" height: "+height+" quality: " + quality)
+            LogUtils.d("url: " + url + " width: " + width + " height: " + height + " quality: " + quality)
             var reductionWidth = width?.div(3);
             var reductionHeight = height?.div(3);
             var reductionQuality = quality;
@@ -105,7 +112,7 @@ class SRHuaweiImage {
                 transformations(
                     SRTransformation(
                         url,
-                        scale,context
+                        scale, context
                     )
                 )
             }
@@ -122,20 +129,20 @@ class SRHuaweiImage {
             quality: Int? = 100
 
         ) {
-            LogUtils.d("url: " + url+" width: " + width+" height: "+height+" quality: " + quality)
+            LogUtils.d("url: " + url + " width: " + width + " height: " + height + " quality: " + quality)
 //            var reductionWidth = width?.div(3);
 //            var reductionHeight = height?.div(3);
             var reductionQuality = quality;
             var url = url
-            var scale = SISRConfiguration.SISR_SCALE_1X
+            var scale: Float
             if (SRMaxWidth > width!! && SRMaxHeight > height!!) {
                 scale = SISRConfiguration.SISR_SCALE_3X
                 url = HuaWeiObsUtils.thumbnailFromUrl(url, width!!, height!!)
             } else {
                 scale = SISRConfiguration.SISR_SCALE_1X
             }
-            var startTime :Long= 0
-            var endTime:Long= 0
+            var startTime: Long = 0
+            var endTime: Long = 0
             this.load(url) {
                 memoryCachePolicy(CachePolicy.DISABLED)
                 networkCachePolicy(CachePolicy.ENABLED)
@@ -144,36 +151,83 @@ class SRHuaweiImage {
                 listener(
                     onStart = { request ->
                         startTime = SystemClock.uptimeMillis()
-                        LogUtils.d("TestTime", "onStart huaweiImage"+startTime)
+                        LogUtils.d("TestTime", "onStart huaweiImage" + startTime)
                     },
                     onError = { request, throwable ->
                         endTime = SystemClock.uptimeMillis() // 获取结束时间
-                        LogUtils.e("TestTime", "onError huaweiImage Runtime: " + (endTime - startTime)+"throwable: " + throwable.throwable.toString())
+                        LogUtils.e(
+                            "TestTime",
+                            "onError huaweiImage Runtime: " + (endTime - startTime) + "throwable: " + throwable.throwable.toString()
+                        )
                     },
                     onCancel = { request ->
                         endTime = SystemClock.uptimeMillis() // 获取结束时间
-                        LogUtils.e("TestTime", "onCancel huaweiImage Runtime: " + (endTime - startTime))
+                        LogUtils.e(
+                            "TestTime",
+                            "onCancel huaweiImage Runtime: " + (endTime - startTime)
+                        )
                     },
                     onSuccess = { request, metadata ->
                         endTime = SystemClock.uptimeMillis() // 获取结束时间
-                        LogUtils.e("TestTime", "onSuccess huaweiImage Runtime: " + (endTime - startTime))
+                        LogUtils.e(
+                            "TestTime",
+                            "onSuccess huaweiImage Runtime: " + (endTime - startTime)
+                        )
                     }
                 )
                 transformations(
                     SRTransformation(
                         url,
-                        scale,context
+                        scale, context
                     )
                 )
             }
         }
 
-        fun SRImage(bitmap: Bitmap, context: Context, scale: Float): Bitmap? {
 
+
+        fun SRBase64Image(base64: String, context: Context, scale: Float): String {
+            var startTime: Long = 0;
+            if (SRHuaweiImage.isDebug) {
+                startTime = SystemClock.uptimeMillis()
+            }
+
+            val byteArray: ByteArray = Base64.decode(base64, Base64.DEFAULT)
+            //todo  需要VisionImageMetadata metadata
+//            VisionImage.fromByteArray(byteArray)
+//            SRImage(VisionImage.fromByteArray(byteArray), context, scale).let {
+//                if (it == null) return it
+//                return it?.bitmap
+//            }
+            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+            var srBitmap =
+                SRImage(VisionImage.fromBitmap(bitmap), context, scale).let {
+                    if (it == null) return ""
+                    return@let it?.bitmap
+                }
+            var string = EncodeUtils.base64Encode2String(ConvertUtils.bitmap2Bytes(srBitmap))
+            if (SRHuaweiImage.isDebug) {
+                val endTime = SystemClock.uptimeMillis()
+                LogUtils.e(
+                    "TestTime",
+                    "transform  Runtime: " + (endTime - startTime) + "startTime: " + startTime.toString() + "endTime" + endTime.toString()
+                )
+            }
+            return string;
+        }
+
+
+        fun SRImageBitmap(bitmap: Bitmap, context: Context, scale: Float): Bitmap? {
+            SRImage(VisionImage.fromBitmap(bitmap), context, scale).let {
+                if (it == null) return it
+                return it?.bitmap
+            }
+        }
+
+        fun SRImage(image: VisionImage, context: Context, scale: Float): ImageResult? {
             // 准备输入图片
             // Prepare input bitmap
-            val image = VisionImage.fromBitmap(bitmap)
-
+            //image
 
             // 创建超分对象
             // Create SR object
@@ -235,7 +289,7 @@ class SRHuaweiImage {
                 LogUtils.e("SISR result has null bitmap!")
                 return null;
             }
-            return result.bitmap
+            return result
         }
 
 //        var visionCallback: VisionCallback<ImageResult> = object : VisionCallback<ImageResult> {
