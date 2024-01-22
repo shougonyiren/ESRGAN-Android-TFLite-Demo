@@ -2,18 +2,13 @@ package org.tensorflow.lite.examples.superresolution.ui.home
 
 import android.os.Bundle
 import android.os.SystemClock
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import coil.imageLoader
 import coil.load
-import coil.memory.MemoryCache
 import coil.request.CachePolicy
-import coil.request.ImageRequest
 import com.blankj.utilcode.util.LogUtils
 import com.lh.SuperResolutionImage.HuaWeiObsUtils
 import com.lh.SuperResolutionImage.SRHuaweiImage
@@ -28,9 +23,6 @@ class HomeFragment : Fragment() {
 
     var selectUrl: String = ""
 
-    //1.写个列表 若干obs的图
-    //2.加载原图 加载缩放参数图  加载缩放参数加超分的图
-    //3.计算耗时
     private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and
@@ -47,7 +39,7 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        SRHuaweiImage.getInstance(requireContext())
+//        SRHuaweiImage.getInstance(requireContext())
 //        val textView: TextView = binding.textHome
 //        homeViewModel.text.observe(viewLifecycleOwner) {
 //            textView.text = it
@@ -60,7 +52,7 @@ class HomeFragment : Fragment() {
         selectUrl = list[0]
         val imageListAdapter = ImageListAdapter(list)
         binding.rvTestImage.adapter = imageListAdapter
-        imageListAdapter.setPictureClickListener(object : ImageListAdapter.PictureClickListener{
+        imageListAdapter.setPictureClickListener(object : ImageListAdapter.PictureClickListener {
             override fun onClick(path: String, position: Int) {
                 selectUrl = list[position]
                 LogUtils.d(" imageListAdapter.setOnItemClickListener position:$position selectUrl:$selectUrl")
@@ -71,9 +63,6 @@ class HomeFragment : Fragment() {
             var endTime: Long = 0
             binding.networkImage.load(selectUrl) {
                 error(R.mipmap.ic_launcher)
-                memoryCachePolicy(CachePolicy.DISABLED)
-                networkCachePolicy(CachePolicy.ENABLED)
-                diskCachePolicy(CachePolicy.DISABLED)
                 listener(
                     onStart = { request ->
                         startTime = SystemClock.uptimeMillis()
@@ -83,7 +72,7 @@ class HomeFragment : Fragment() {
                         endTime = SystemClock.uptimeMillis() // 获取结束时间
                         LogUtils.e(
                             "TestTime",
-                            "onError + networkImage Runtime: " + (endTime - startTime)+"throwable: " + throwable.throwable.toString()
+                            "onError + networkImage Runtime: " + (endTime - startTime) + "throwable: " + throwable.throwable.toString()
                         )
                     },
                     onCancel = { request ->
@@ -109,9 +98,6 @@ class HomeFragment : Fragment() {
             var url = HuaWeiObsUtils.thumbnailFromUrl(selectUrl, 400, 400)
             binding.networkThumbnailImage.load(url) {
                 error(R.mipmap.ic_launcher)
-                memoryCachePolicy(CachePolicy.DISABLED)
-                networkCachePolicy(CachePolicy.ENABLED)
-                diskCachePolicy(CachePolicy.DISABLED)
                 listener(
                     onStart = { request ->
                         startTime = SystemClock.uptimeMillis()
@@ -121,7 +107,7 @@ class HomeFragment : Fragment() {
                         endTime = SystemClock.uptimeMillis() // 获取结束时间
                         LogUtils.e(
                             "TestTime",
-                            "onError networkThumbnail Runtime: " + (endTime - startTime)+"throwable: " + throwable.throwable.toString()
+                            "onError networkThumbnail Runtime: " + (endTime - startTime) + "throwable: " + throwable.throwable.toString()
                         )
                     },
                     onCancel = { request ->
@@ -142,7 +128,13 @@ class HomeFragment : Fragment() {
             }
         }
         binding.huaweiImageStartLoadButton.setOnClickListener {
-            binding.huaweiImage.loadSRImage(requireContext(), selectUrl, 400, 400)
+            binding.huaweiImage.loadSRImage(
+                requireContext(),
+                selectUrl,
+                400,
+                400,
+                toThumbnail = true
+            )
         }
         return root
     }

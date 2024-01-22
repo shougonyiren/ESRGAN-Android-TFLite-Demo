@@ -6,11 +6,18 @@ import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.ImageLoader
+import coil.disk.DiskCache
+import coil.imageLoader
 import coil.load
+import coil.memory.MemoryCache
 import coil.request.CachePolicy
+import coil.util.DebugLogger
 import com.blankj.utilcode.util.LogUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.lh.SuperResolutionImage.HuaWeiObsUtils
+import com.lh.SuperResolutionImage.SRHuaweiImage.Companion.loadSRImage
+import org.tensorflow.lite.examples.superresolution.MyApplication
 import org.tensorflow.lite.examples.superresolution.R
 import org.tensorflow.lite.examples.superresolution.databinding.RcCommonImageBinding
 
@@ -23,15 +30,23 @@ import org.tensorflow.lite.examples.superresolution.databinding.RcCommonImageBin
  * @Description : ImageListAdapter
 
  */
-class ImageListAdapter(data: List<String>) : BaseQuickAdapter<String,ImageListAdapter.VH>(data) {
+class ImageListAdapter(data: List<String>) : BaseQuickAdapter<String, ImageListAdapter.VH>(data) {
+    var imageLoader: ImageLoader? = null
+    var toSR:Boolean=false
+    constructor(data: List<String>, imageLoader: ImageLoader,toSR: Boolean) : this(data) {
+        this.imageLoader = imageLoader;
+        this.toSR = toSR
+    }
 
     var listener: PictureClickListener? = null
+
     class VH(
         parent: ViewGroup,
         val binding: RcCommonImageBinding = RcCommonImageBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         ),
     ) : RecyclerView.ViewHolder(binding.root)
+
     /**
      * Implement this method and use the helper to adapt the view to the given item.
      *
@@ -42,47 +57,57 @@ class ImageListAdapter(data: List<String>) : BaseQuickAdapter<String,ImageListAd
      */
     override fun onBindViewHolder(holder: ImageListAdapter.VH, position: Int, item: String?) {
         //holder.binding.image.loadSRImage(
-       LogUtils.d("onBindViewHolder position"+position.toString()+" item:" +item.toString())
+        LogUtils.d("onBindViewHolder position" + position.toString() + " item:" + item.toString())
         item?.let {
-            var url= HuaWeiObsUtils.thumbnailFromUrl(item,200,200)
-            var startTime :Long= 0
-            var endTime:Long= 0
-            holder.binding.image.load(url){
-                error(R.mipmap.ic_launcher)
-                memoryCachePolicy(CachePolicy.DISABLED)
-                networkCachePolicy(CachePolicy.ENABLED)
-                diskCachePolicy(CachePolicy.DISABLED)
-                listener(
-                    onStart = { request ->
-                        startTime = SystemClock.uptimeMillis()
-                        LogUtils.d("TestTime", "onStart networkThumbnail" + startTime)
-                    },
-                    onError = { request, throwable ->
-                        endTime = SystemClock.uptimeMillis() // 获取结束时间
-                        LogUtils.e(
-                            "TestTime",
-                            "onError networkThumbnail Runtime: " + (endTime - startTime)+"throwable: " + throwable.throwable.toString()
-                        )
-                    },
-                    onCancel = { request ->
-                        endTime = SystemClock.uptimeMillis() // 获取结束时间
-                        LogUtils.e(
-                            "TestTime",
-                            "onCancel networkThumbnail Runtime: " + (endTime - startTime)
-                        )
-                    },
-                    onSuccess = { request, metadata ->
-                        endTime = SystemClock.uptimeMillis() // 获取结束时间
-                        LogUtils.e(
-                            "TestTime",
-                            "onSuccess networkThumbnail Runtime: " + (endTime - startTime)
-                        )
-                    }
-                )
+            var url = HuaWeiObsUtils.thumbnailFromUrl(item, 200, 200)
+            var startTime: Long = 0
+            var endTime: Long = 0
+            if(toSR){
+                holder.binding.image.loadSRImage(context,url,imageLoader=getImageLoader())
+            }else{
+                holder.binding.image.load(url, imageLoader = getImageLoader()) {
+                    error(R.mipmap.ic_launcher)
+                    listener(
+                        onStart = { request ->
+                            startTime = SystemClock.uptimeMillis()
+                            LogUtils.d("TestTime", "onStart networkThumbnail$startTime")
+                        },
+                        onError = { request, throwable ->
+                            endTime = SystemClock.uptimeMillis() // 获取结束时间
+                            LogUtils.e(
+                                "TestTime",
+                                "onError networkThumbnail Runtime: " + (endTime - startTime) + "throwable: " + throwable.throwable.toString()
+                            )
+                        },
+                        onCancel = {
+                            endTime = SystemClock.uptimeMillis() // 获取结束时间
+                            LogUtils.e(
+                                "TestTime",
+                                "onCancel networkThumbnail Runtime: " + (endTime - startTime)
+                            )
+                        },
+                        onSuccess = { request, metadata ->
+                            endTime = SystemClock.uptimeMillis() // 获取结束时间
+                            LogUtils.e(
+                                "TestTime",
+                                "onSuccess networkThumbnail Runtime: " + (endTime - startTime)
+                            )
+                        }
+                    )
+                }
             }
+
             holder.binding.image.setOnClickListener {
-                listener?.onClick(item,position)
+                listener?.onClick(item, position)
             }
+        }
+    }
+
+    private fun getImageLoader(): ImageLoader {
+        if (imageLoader != null) {
+            return imageLoader!!
+        } else {
+            return MyApplication().imageLoader
         }
     }
 
@@ -99,6 +124,6 @@ class ImageListAdapter(data: List<String>) : BaseQuickAdapter<String,ImageListAd
     }
 
     interface PictureClickListener {
-        fun onClick(path: String,  position: Int)
+        fun onClick(path: String, position: Int)
     }
 }

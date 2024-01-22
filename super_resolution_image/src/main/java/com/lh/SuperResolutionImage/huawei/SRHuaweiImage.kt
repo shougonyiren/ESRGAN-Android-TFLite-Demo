@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.ImageView
 import coil.ImageLoader
 import coil.disk.DiskCache
+import coil.imageLoader
 import coil.load
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
@@ -124,29 +125,38 @@ class SRHuaweiImage {
         fun ImageView.loadSRImage(
             context: Context,
             url: String,
-            width: Int,
-            height: Int,
-            quality: Int? = 100
-
+            width: Int?=null,
+            height: Int?=null,
+            quality: Int? = 100,
+            toThumbnail: Boolean = false,
+            imageLoader: ImageLoader = context.imageLoader,
         ) {
+
+            var mWidth = width
+            var mHeight = height
             LogUtils.d("url: " + url + " width: " + width + " height: " + height + " quality: " + quality)
 //            var reductionWidth = width?.div(3);
 //            var reductionHeight = height?.div(3);
             var reductionQuality = quality;
             var url = url
             var scale: Float
-            if (SRMaxWidth > width!! && SRMaxHeight > height!!) {
+            if (mWidth == null) {
+                mWidth = this.width
+            }
+            if (mHeight == null) {
+                mHeight = this.height
+            }
+            if (SRMaxWidth > mHeight!! && SRMaxHeight > mHeight!!) {
                 scale = SISRConfiguration.SISR_SCALE_3X
-                url = HuaWeiObsUtils.thumbnailFromUrl(url, width!!, height!!)
+                if (toThumbnail) {
+                    url = HuaWeiObsUtils.thumbnailFromUrl(url, mWidth!!, mHeight!!)
+                }
             } else {
                 scale = SISRConfiguration.SISR_SCALE_1X
             }
             var startTime: Long = 0
             var endTime: Long = 0
             this.load(url) {
-                memoryCachePolicy(CachePolicy.DISABLED)
-                networkCachePolicy(CachePolicy.ENABLED)
-                diskCachePolicy(CachePolicy.DISABLED)
                 size(ViewSizeResolver(this@loadSRImage))
                 listener(
                     onStart = { request ->
@@ -183,7 +193,6 @@ class SRHuaweiImage {
                 )
             }
         }
-
 
 
         fun SRBase64Image(base64: String, context: Context, scale: Float): String {
