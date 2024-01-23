@@ -55,7 +55,8 @@ class ImageListAdapter(data: List<String>) : BaseQuickAdapter<String, ImageListA
         //holder.binding.image.loadSRImage(
         LogUtils.d("onBindViewHolder position" + position.toString() + " item:" + item.toString())
         item?.let {
-            var url = HuaWeiObsUtils.thumbnailFromUrl(item, 200, 200)
+           // var url = HuaWeiObsUtils.thumbnailFromUrl(item, 200, 200)
+            var url = item
             var startTime: Long = 0
             var endTime: Long = 0
             if(toSR){

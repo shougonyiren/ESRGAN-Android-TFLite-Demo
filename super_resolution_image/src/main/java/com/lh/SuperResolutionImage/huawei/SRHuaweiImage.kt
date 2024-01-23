@@ -19,6 +19,7 @@ import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.LogUtils
 import com.huawei.hiai.vision.common.VisionBase
+import com.huawei.hiai.vision.common.VisionCallback
 import com.huawei.hiai.vision.common.VisionImage
 import com.huawei.hiai.vision.image.sr.ImageSuperResolution
 import com.huawei.hiai.vision.visionkit.common.VisionConfiguration
@@ -38,17 +39,15 @@ import java.io.ByteArrayOutputStream
  * @Description : SRHuaweiImage
 
  */
-class SRHuaweiImage {
+class SRHuaweiImage private constructor(private var context: Context) {
 
 
     private var isConnected: Boolean = false
 
     private var connecting: Boolean = false
-    private var context: Context
 
-    private constructor(context: Context) {
+    init {
         LogUtils.d("Start SISR")
-        this.context = context
         connectHuaweiAIEngine(context)
     }
 
@@ -134,7 +133,7 @@ class SRHuaweiImage {
 
             var mWidth = width
             var mHeight = height
-            LogUtils.d("url: " + url + " width: " + width + " height: " + height + " quality: " + quality)
+
 //            var reductionWidth = width?.div(3);
 //            var reductionHeight = height?.div(3);
             var reductionQuality = quality;
@@ -146,14 +145,16 @@ class SRHuaweiImage {
             if (mHeight == null) {
                 mHeight = this.height
             }
-            if (SRMaxWidth > mHeight!! && SRMaxHeight > mHeight!!) {
-                scale = SISRConfiguration.SISR_SCALE_3X
-                if (toThumbnail) {
-                    url = HuaWeiObsUtils.thumbnailFromUrl(url, mWidth!!, mHeight!!)
-                }
-            } else {
-                scale = SISRConfiguration.SISR_SCALE_1X
-            }
+            scale = SISRConfiguration.SISR_SCALE_3X
+//            if (SRMaxWidth > mHeight!! && SRMaxHeight > mHeight!!) {
+//                scale = SISRConfiguration.SISR_SCALE_3X
+//                if (toThumbnail) {
+//                    url = HuaWeiObsUtils.thumbnailFromUrl(url, mWidth!!, mHeight!!)
+//                }
+//            } else {
+//                scale = SISRConfiguration.SISR_SCALE_1X
+//            }
+            LogUtils.d("SRMaxWidth"+SRMaxWidth+" mHeight"+mHeight +"SRMaxHeight"+SRMaxHeight+"mHeight"+mHeight,"url: " + url + " width: " + width + " height: " + height + " quality: " + quality+  "  SISRConfiguration : "+scale)
             var startTime: Long = 0
             var endTime: Long = 0
             this.load(url, imageLoader = imageLoader) {
@@ -282,11 +283,11 @@ class SRHuaweiImage {
 //           msg.obj = "Runtime: " + (endTime - startTime)
 //           mHander.sendMessage(msg)
             if (resultCode == 700) {
-                LogUtils.e("Wait for result.")
+                LogUtils.e("SISR Wait for result.")
                 return null;
             } else if (resultCode != 0) {
                 //Log.e(MainActivity.TAG, "Failed to run super-resolution, return : $resultCode")
-                LogUtils.e("Failed to run super-resolution, return : $resultCode")
+                LogUtils.e("SISR Failed to run super-resolution, return : $resultCode")
                 return null;
             }
 
