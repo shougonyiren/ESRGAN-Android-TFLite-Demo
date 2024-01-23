@@ -11,6 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="切换数据 当前为:"
+        android:visibility="invisible"
+        tools:isibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,17 +41,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SR缩略图" />
+        <RadioButton
+            android:id="@+id/radio_null"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="清除图片及缓存" />
     </RadioGroup>
 
-    <TextView
-        android:id="@+id/clean_image_cache"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="清除图片缓存"
-        app:layout_constraintBottom_toBottomOf="@id/checkbox"
-        app:layout_constraintStart_toEndOf="@id/checkbox"
-        app:layout_constraintTop_toTopOf="@id/checkbox" />
+<!--    <TextView-->
+<!--        android:id="@+id/clean_image_cache"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:text="清除图片缓存"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/checkbox"-->
+<!--        app:layout_constraintStart_toEndOf="@id/checkbox"-->
+<!--        app:layout_constraintTop_toTopOf="@id/checkbox" />-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_test_image"

@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.annotation.ExperimentalCoilApi
+import coil.imageLoader
 import common.adapter.ImageListAdapter
 import org.tensorflow.lite.examples.superresolution.MyApplication
 import org.tensorflow.lite.examples.superresolution.R
@@ -41,10 +42,10 @@ class DashboardFragment : Fragment() {
         val list = TestUtils.list
         val imageListAdapter = ImageListAdapter(listOf<String>())
         with(binding) {
-            cleanImageCache.setOnClickListener {
-                imageListAdapter.imageLoader?.diskCache?.clear();
-                imageListAdapter.imageLoader?.memoryCache?.clear();
-            }
+//            cleanImageCache.setOnClickListener {
+//                imageListAdapter.imageLoader?.diskCache?.clear();
+//                imageListAdapter.imageLoader?.memoryCache?.clear();
+//            }
             rvTestImage.adapter = imageListAdapter;
             checkbox.setOnCheckedChangeListener { group, checkedId ->
                 when(checkedId) {
@@ -66,6 +67,13 @@ class DashboardFragment : Fragment() {
                         imageListAdapter.toSR=true;
                         imageListAdapter.items=list;
                         imageListAdapter.notifyDataSetChanged()
+                    }
+                    R.id.radio_null->{
+                        imageListAdapter.toSR=false;
+                        imageListAdapter.items=listOf<String>();
+                        imageListAdapter.notifyDataSetChanged()
+                        context?.imageLoader?.diskCache?.clear()
+                        context?.imageLoader?.memoryCache?.clear()
                     }
                     else -> {
 
