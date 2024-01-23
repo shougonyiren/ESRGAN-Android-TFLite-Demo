@@ -125,8 +125,8 @@ class SRHuaweiImage {
         fun ImageView.loadSRImage(
             context: Context,
             url: String,
-            width: Int?=null,
-            height: Int?=null,
+            width: Int? = null,
+            height: Int? = null,
             quality: Int? = 100,
             toThumbnail: Boolean = false,
             imageLoader: ImageLoader = context.imageLoader,
@@ -156,12 +156,12 @@ class SRHuaweiImage {
             }
             var startTime: Long = 0
             var endTime: Long = 0
-            this.load(url) {
+            this.load(url, imageLoader = imageLoader) {
                 size(ViewSizeResolver(this@loadSRImage))
                 listener(
                     onStart = { request ->
                         startTime = SystemClock.uptimeMillis()
-                        LogUtils.d("TestTime", "onStart huaweiImage" + startTime)
+//                        LogUtils.d("TestTime", "onStart huaweiImage" + startTime)
                     },
                     onError = { request, throwable ->
                         endTime = SystemClock.uptimeMillis() // 获取结束时间
@@ -170,7 +170,7 @@ class SRHuaweiImage {
                             "onError huaweiImage Runtime: " + (endTime - startTime) + "throwable: " + throwable.throwable.toString()
                         )
                     },
-                    onCancel = { request ->
+                    onCancel = {
                         endTime = SystemClock.uptimeMillis() // 获取结束时间
                         LogUtils.e(
                             "TestTime",

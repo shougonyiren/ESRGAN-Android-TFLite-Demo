@@ -39,7 +39,7 @@ class DashboardFragment : Fragment() {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
         val list = TestUtils.list
-        val imageListAdapter = ImageListAdapter(list)
+        val imageListAdapter = ImageListAdapter(listOf<String>())
         with(binding) {
             cleanImageCache.setOnClickListener {
                 imageListAdapter.imageLoader?.diskCache?.clear();
@@ -50,14 +50,22 @@ class DashboardFragment : Fragment() {
                 when(checkedId) {
                     //todo:
                     R.id.radio_image->{
-                        var list:List<String> = TestUtils.getThumbnailList(200,200);
-
+                        var list:List<String> = TestUtils.list;
+                        imageListAdapter.toSR=false;
+                        imageListAdapter.items=list;
+                        imageListAdapter.notifyDataSetChanged()
                     }
                     R.id.radio_thumbnail->{
                         var list:List<String> = TestUtils.getThumbnailList(200,200);
+                        imageListAdapter.toSR=false;
+                        imageListAdapter.items=list;
+                        imageListAdapter.notifyDataSetChanged()
                     }
                     R.id.radio_sr_thumbnail->{
                         var list:List<String> = TestUtils.getThumbnailList(200,200);
+                        imageListAdapter.toSR=true;
+                        imageListAdapter.items=list;
+                        imageListAdapter.notifyDataSetChanged()
                     }
                     else -> {
 

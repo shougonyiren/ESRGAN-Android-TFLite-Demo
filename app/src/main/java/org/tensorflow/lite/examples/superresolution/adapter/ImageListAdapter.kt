@@ -7,12 +7,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
-import coil.disk.DiskCache
 import coil.imageLoader
 import coil.load
-import coil.memory.MemoryCache
-import coil.request.CachePolicy
-import coil.util.DebugLogger
 import com.blankj.utilcode.util.LogUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.lh.SuperResolutionImage.HuaWeiObsUtils
@@ -63,9 +59,9 @@ class ImageListAdapter(data: List<String>) : BaseQuickAdapter<String, ImageListA
             var startTime: Long = 0
             var endTime: Long = 0
             if(toSR){
-                holder.binding.image.loadSRImage(context,url,imageLoader=getImageLoader())
+                holder.binding.image.loadSRImage(context,url,imageLoader=getMImageLoader())
             }else{
-                holder.binding.image.load(url, imageLoader = getImageLoader()) {
+                holder.binding.image.load(url, imageLoader = getMImageLoader()) {
                     error(R.mipmap.ic_launcher)
                     listener(
                         onStart = { request ->
@@ -103,11 +99,11 @@ class ImageListAdapter(data: List<String>) : BaseQuickAdapter<String, ImageListA
         }
     }
 
-    private fun getImageLoader(): ImageLoader {
+    fun getMImageLoader(): ImageLoader {
         if (imageLoader != null) {
             return imageLoader!!
         } else {
-            return MyApplication().imageLoader
+            return context.imageLoader
         }
     }
 

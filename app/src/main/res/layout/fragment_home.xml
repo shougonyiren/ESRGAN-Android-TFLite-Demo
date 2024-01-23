@@ -21,6 +21,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_test_image"
                 android:layout_width="wrap_content"
+                android:visibility="gone"
                 android:layout_height="100dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:orientation="horizontal" />
