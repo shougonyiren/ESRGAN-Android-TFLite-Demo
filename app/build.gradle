@@ -35,6 +35,12 @@ android {
             jniDebuggable true
             packagingOptions { doNotStrip "**//.so" }
         }
+        benchmark {
+            initWith release
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['release']
+            debuggable false
+        }
     }
 
     aaptOptions {
