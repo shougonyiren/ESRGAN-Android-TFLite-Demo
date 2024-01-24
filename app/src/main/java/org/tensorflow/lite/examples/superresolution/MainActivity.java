@@ -149,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
 
         selectedImageTextView = findViewById(R.id.chosen_image_tv);
         gpuSwitch = findViewById(R.id.switch_use_gpu);
+//        //默认改为true 有问题
+//        gpuSwitch.setChecked(true);
 
         ImageView[] lowResImageViews = {lowResImageView1, lowResImageView2, lowResImageView3};
 

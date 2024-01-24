@@ -10,7 +10,7 @@ android {
     namespace "org.tensorflow.lite.examples.superresolution"
     defaultConfig {
 
-        applicationId "org.tensorflow.lite.examples.superresolution"
+        applicationId "coml.lh.superresolution"
         minSdkVersion 28
         targetSdkVersion 33
         versionCode 1
