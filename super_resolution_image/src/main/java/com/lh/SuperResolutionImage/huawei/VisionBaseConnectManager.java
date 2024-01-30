@@ -4,18 +4,18 @@ import android.util.Log;
 
 import com.huawei.hiai.vision.common.ConnectionCallback;
 
-public class ConnectManager {
+public class VisionBaseConnectManager {
     private static final String TAG = "ConnectManager";
-    private static ConnectManager mInstance = null;
+    private static VisionBaseConnectManager mInstance = null;
     private Object mWaitConnect = new Object();
     private boolean isConnected = false;
 
-    protected ConnectManager() {
+    protected VisionBaseConnectManager() {
     }
 
-    public static ConnectManager getInstance() {
+    public static VisionBaseConnectManager getInstance() {
         if (mInstance == null) {
-            mInstance = new ConnectManager();
+            mInstance = new VisionBaseConnectManager();
         }
         return mInstance;
     }

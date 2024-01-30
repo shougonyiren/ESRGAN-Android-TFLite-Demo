@@ -26,7 +26,7 @@ import com.huawei.hiai.vision.visionkit.image.ImageResult
 import com.huawei.hiai.vision.visionkit.image.sr.SISRConfiguration
 import com.lh.SuperResolutionImage.coilTransformation.SRTransformation
 import com.lh.SuperResolutionImage.glideTransformation.SRGlideTransformation
-import com.lh.SuperResolutionImage.huawei.ConnectManager
+import com.lh.SuperResolutionImage.huawei.VisionBaseConnectManager
 
 
 /**
@@ -58,13 +58,13 @@ class SRHuaweiImage private constructor(private var context: Context) {
         // Connect to AI Engine
         VisionBase.init(
             context,
-            ConnectManager.getInstance().getmConnectionCallback()
+            VisionBaseConnectManager.getInstance().getmConnectionCallback()
         )
-        if (!ConnectManager.getInstance().isConnected) {
-            ConnectManager.getInstance().waitConnect()
+        if (!VisionBaseConnectManager.getInstance().isConnected) {
+            VisionBaseConnectManager.getInstance().waitConnect()
         }
-        isConnected = ConnectManager.getInstance().isConnected
-        if (!ConnectManager.getInstance().isConnected) {
+        isConnected = VisionBaseConnectManager.getInstance().isConnected
+        if (!VisionBaseConnectManager.getInstance().isConnected) {
             LogUtils.d("Can't connect to server.")
 //            mHuaweiTxtViewResult.setText("Can't connect to server!")
             return
@@ -293,6 +293,10 @@ class SRHuaweiImage private constructor(private var context: Context) {
         }
 
         fun SRImage(image: VisionImage, context: Context, scale: Float): ImageResult? {
+            if (!VisionBaseConnectManager.getInstance().isConnected) {
+                LogUtils.d("SRImage VisionBaseConnectManager notConnected ")
+                return null
+            }
             // 准备输入图片
             // Prepare input bitmap
             //image
