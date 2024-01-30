@@ -3,31 +3,30 @@ package com.lh.SuperResolutionImage
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.os.SystemClock
 import android.util.Base64
 import android.util.Log
 import android.widget.ImageView
 import coil.ImageLoader
-import coil.disk.DiskCache
 import coil.imageLoader
 import coil.load
-import coil.memory.MemoryCache
-import coil.request.CachePolicy
 import coil.size.ViewSizeResolver
-import coil.util.DebugLogger
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.LogUtils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.huawei.hiai.vision.common.VisionBase
-import com.huawei.hiai.vision.common.VisionCallback
 import com.huawei.hiai.vision.common.VisionImage
 import com.huawei.hiai.vision.image.sr.ImageSuperResolution
 import com.huawei.hiai.vision.visionkit.common.VisionConfiguration
 import com.huawei.hiai.vision.visionkit.image.ImageResult
 import com.huawei.hiai.vision.visionkit.image.sr.SISRConfiguration
 import com.lh.SuperResolutionImage.coilTransformation.SRTransformation
+import com.lh.SuperResolutionImage.glideTransformation.SRGlideTransformation
 import com.lh.SuperResolutionImage.huawei.ConnectManager
-import java.io.ByteArrayOutputStream
 
 
 /**
@@ -45,6 +44,7 @@ class SRHuaweiImage private constructor(private var context: Context) {
     private var isConnected: Boolean = false
 
     private var connecting: Boolean = false
+
 
     init {
         LogUtils.d("Start SISR")
@@ -73,6 +73,12 @@ class SRHuaweiImage private constructor(private var context: Context) {
     }
 
     companion object {
+        val IMAGE_LOADING_METHOD_GLIDE = 0;
+        val IMAGE_LOADING_METHOD_COIL = 1;
+
+        var imageMethod: Int = IMAGE_LOADING_METHOD_GLIDE;
+
+
         public var isDebug: Boolean = true
 
         @Volatile
@@ -154,44 +160,96 @@ class SRHuaweiImage private constructor(private var context: Context) {
 //            } else {
 //                scale = SISRConfiguration.SISR_SCALE_1X
 //            }
-            LogUtils.d("SRMaxWidth"+SRMaxWidth+" mHeight"+mHeight +"SRMaxHeight"+SRMaxHeight+"mHeight"+mHeight,"url: " + url + " width: " + width + " height: " + height + " quality: " + quality+  "  SISRConfiguration : "+scale)
+            LogUtils.d(
+                "SRMaxWidth" + SRMaxWidth + " mHeight" + mHeight + "SRMaxHeight" + SRMaxHeight + "mHeight" + mHeight,
+                "url: " + url + " width: " + width + " height: " + height + " quality: " + quality + "  SISRConfiguration : " + scale
+            )
             var startTime: Long = 0
             var endTime: Long = 0
-            this.load(url, imageLoader = imageLoader) {
-                size(ViewSizeResolver(this@loadSRImage))
-                listener(
-                    onStart = { request ->
-                        startTime = SystemClock.uptimeMillis()
+            if (imageMethod == IMAGE_LOADING_METHOD_COIL) {
+                this.load(url, imageLoader = imageLoader) {
+                    size(ViewSizeResolver(this@loadSRImage))
+                    listener(
+                        onStart = { request ->
+                            startTime = SystemClock.uptimeMillis()
 //                        LogUtils.d("TestTime", "onStart huaweiImage" + startTime)
-                    },
-                    onError = { request, throwable ->
-                        endTime = SystemClock.uptimeMillis() // 获取结束时间
-                        LogUtils.e(
-                            "TestTime",
-                            "onError huaweiImage Runtime: " + (endTime - startTime) + "throwable: " + throwable.throwable.toString()
-                        )
-                    },
-                    onCancel = {
-                        endTime = SystemClock.uptimeMillis() // 获取结束时间
-                        LogUtils.e(
-                            "TestTime",
-                            "onCancel huaweiImage Runtime: " + (endTime - startTime)
-                        )
-                    },
-                    onSuccess = { request, metadata ->
-                        endTime = SystemClock.uptimeMillis() // 获取结束时间
-                        LogUtils.e(
-                            "TestTime",
-                            "onSuccess huaweiImage Runtime: " + (endTime - startTime)
-                        )
-                    }
-                )
-                transformations(
-                    SRTransformation(
-                        url,
-                        scale, context
+                        },
+                        onError = { request, throwable ->
+                            endTime = SystemClock.uptimeMillis() // 获取结束时间
+                            LogUtils.e(
+                                "TestTime",
+                                "onError huaweiImage Runtime: " + (endTime - startTime) + "throwable: " + throwable.throwable.toString()
+                            )
+                        },
+                        onCancel = {
+                            endTime = SystemClock.uptimeMillis() // 获取结束时间
+                            LogUtils.e(
+                                "TestTime",
+                                "onCancel huaweiImage Runtime: " + (endTime - startTime)
+                            )
+                        },
+                        onSuccess = { request, metadata ->
+                            endTime = SystemClock.uptimeMillis() // 获取结束时间
+                            LogUtils.e(
+                                "TestTime",
+                                "onSuccess huaweiImage Runtime: " + (endTime - startTime)
+                            )
+                        }
                     )
-                )
+                    transformations(
+                        SRTransformation(
+                            url,
+                            scale, context
+                        )
+                    )
+                }
+            } else {
+                startTime = SystemClock.uptimeMillis()
+//                val factory = DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
+//                val thumbnailRequest: DrawableRequestBuilder<String> = Glide.with(context).load(url)
+                Glide.with(context)
+                    .asBitmap()
+                    .load(url)
+                    .transform(
+                        SRGlideTransformation(
+                            url,
+                            scale, context
+                        )
+                    )
+                    //.thumbnail(thumbnailRequest)缩略图
+                    //之后对过渡进行控制 .transition(withCrossFade(factory))
+                    .into(object : CustomTarget<Bitmap>() {
+                        /**
+                         * The method that will be called when the resource load has finished.
+                         *
+                         * @param resource the loaded resource.
+                         */
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
+                            endTime = SystemClock.uptimeMillis() // 获取结束时间
+                            LogUtils.e(
+                                "TestTime  startTime$startTime endTime:$endTime",
+                                "onSuccess glide onResourceReady  Runtime: " + (endTime - startTime) +"url:$url scale:$scale"
+                            )
+                            this@loadSRImage.setImageBitmap(resource)
+                        }
+
+                        /**
+                         * A **mandatory** lifecycle callback that is called when a load is cancelled and its resources
+                         * are freed.
+                         *
+                         *
+                         * You **must** ensure that any current Drawable received in [.onResourceReady] is no longer used before redrawing the container (usually a View) or changing its
+                         * visibility.
+                         *
+                         * @param placeholder The placeholder drawable to optionally show, or null.
+                         */
+                        override fun onLoadCleared(placeholder: Drawable?) {
+
+                        }
+                    })
             }
         }
 
