@@ -102,7 +102,7 @@ class SRHuaweiImage private constructor(private var context: Context) {
             height: Int,
             quality: Int? = 100
         ) {
-            LogUtils.d("url: " + url + " width: " + width + " height: " + height + " quality: " + quality)
+            LogUtils.d("url: $url width: $width height: $height quality: $quality")
             var reductionWidth = width?.div(3);
             var reductionHeight = height?.div(3);
             var reductionQuality = quality;
@@ -231,7 +231,7 @@ class SRHuaweiImage private constructor(private var context: Context) {
                             endTime = SystemClock.uptimeMillis() // 获取结束时间
                             LogUtils.e(
                                 "TestTime  startTime$startTime endTime:$endTime",
-                                "onSuccess glide onResourceReady  Runtime: " + (endTime - startTime) +"url:$url scale:$scale"
+                                "onSuccess glide onResourceReady  Runtime: " + (endTime - startTime) + "url:$url scale:$scale"
                             )
                             this@loadSRImage.setImageBitmap(resource)
                         }

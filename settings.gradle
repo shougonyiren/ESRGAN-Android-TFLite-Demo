@@ -1,6 +1,6 @@
 rootProject.name = 'TFLite Super Resolution Demo App'
 include ':app'
-include ':super_resolution_image'
+include ':super_resolution_image_all'
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
@@ -21,3 +21,4 @@ dependencyResolutionManagement {
     }
 }
 include ':benchmark'
+include ':super-resolution-core'
