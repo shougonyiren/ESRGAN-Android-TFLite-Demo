@@ -33,8 +33,20 @@ class SRHuaweiImage private constructor(private var context: Context) : SRImage(
     private var isConnected: Boolean = false
 
     private var connecting: Boolean = false
+    public var isDebug: Boolean = true
 
 
+    companion object{
+        @Volatile
+        private var instance: SRHuaweiImage? = null
+
+        fun getInstance()=instance
+
+        fun getInstance(context: Context) =
+            instance ?: synchronized(this) {
+                instance ?: SRHuaweiImage(context).also { instance = it }
+            }
+    }
     init {
         LogUtils.d("Start SISR")
         connectHuaweiAIEngine(context)

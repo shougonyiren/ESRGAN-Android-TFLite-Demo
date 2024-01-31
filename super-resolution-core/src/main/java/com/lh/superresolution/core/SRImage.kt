@@ -17,7 +17,7 @@ abstract class SRImage(private var context: Context)  {
 
     }
 
-    public var isDebug: Boolean = true
+
     abstract  fun loadBitmap(bitmap: Bitmap, context: Context, scale: Float): Bitmap?
 
 

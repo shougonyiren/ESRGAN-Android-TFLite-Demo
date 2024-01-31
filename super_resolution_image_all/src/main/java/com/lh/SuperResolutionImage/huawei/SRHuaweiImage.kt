@@ -73,10 +73,10 @@ class SRHuaweiImage private constructor(private var context: Context) {
     }
 
     companion object {
-        val IMAGE_LOADING_METHOD_GLIDE = 0;
-        val IMAGE_LOADING_METHOD_COIL = 1;
+        const val IMAGE_LOADING_METHOD_GLIDE = 0;
+        const val IMAGE_LOADING_METHOD_COIL = 1;
 
-        var imageMethod: Int = IMAGE_LOADING_METHOD_GLIDE;
+        private var imageMethod: Int = IMAGE_LOADING_METHOD_GLIDE;
 
 
         public var isDebug: Boolean = true
@@ -162,7 +162,7 @@ class SRHuaweiImage private constructor(private var context: Context) {
 //            }
             LogUtils.d(
                 "SRMaxWidth" + SRMaxWidth + " mHeight" + mHeight + "SRMaxHeight" + SRMaxHeight + "mHeight" + mHeight,
-                "url: " + url + " width: " + width + " height: " + height + " quality: " + quality + "  SISRConfiguration : " + scale
+                "url: $url width: $width height: $height quality: $quality  SISRConfiguration : $scale"
             )
             var startTime: Long = 0
             var endTime: Long = 0
