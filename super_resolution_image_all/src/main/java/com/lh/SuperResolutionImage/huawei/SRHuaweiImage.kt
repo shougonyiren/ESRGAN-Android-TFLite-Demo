@@ -76,7 +76,7 @@ class SRHuaweiImage private constructor(private var context: Context) {
         const val IMAGE_LOADING_METHOD_GLIDE = 0;
         const val IMAGE_LOADING_METHOD_COIL = 1;
 
-        private var imageMethod: Int = IMAGE_LOADING_METHOD_GLIDE;
+        private var imageMethod: Int = IMAGE_LOADING_METHOD_COIL;
 
 
         public var isDebug: Boolean = true

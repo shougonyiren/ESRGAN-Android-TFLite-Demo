@@ -1,4 +1,4 @@
-rootProject.name = 'TFLite Super Resolution Demo App'
+rootProject.name = 'Super Resolution Demo App'
 include ':app'
 include ':super_resolution_image_all'
 

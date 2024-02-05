@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.lh.SuperResolutionImage.SRHuaweiImage.Companion.loadSRImage
 import org.tensorflow.lite.examples.superresolution.databinding.FragmentNotificationsBinding
+import org.tensorflow.lite.examples.superresolution.test.TestUtils
 
 class NotificationsFragment : Fragment() {
 
@@ -28,10 +29,11 @@ class NotificationsFragment : Fragment() {
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        binding.testImage.loadSRImage(requireContext(), TestUtils.list[0])//.getThumbnailList(1000,1000)
+//        val textView: TextView = binding.textNotifications
+//        notificationsViewModel.text.observe(viewLifecycleOwner) {
+//            textView.text = it
+//        }
         return root
     }
 
