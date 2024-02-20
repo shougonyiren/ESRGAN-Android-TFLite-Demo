@@ -111,7 +111,10 @@ class SRHuaweiImage private constructor(private var context: Context) : SRImage(
     }
 
 
-    fun SRImage(
+    /**
+     *  如果华为版本不支持就返回空
+     */
+    private fun SRImage(
         image: VisionImage,
         context: Context,
         scale: Float,

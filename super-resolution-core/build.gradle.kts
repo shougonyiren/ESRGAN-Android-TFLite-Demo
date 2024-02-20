@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.lh.super_resolutionimage_core"
-        minSdk = 23
+        minSdk = 21
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -32,6 +32,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
     }
 }
 
