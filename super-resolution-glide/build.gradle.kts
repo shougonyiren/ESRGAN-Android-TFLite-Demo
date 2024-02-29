@@ -43,7 +43,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
 
-    implementation(project(mapOf("path" to ":super-resolution-core")))
+
 
     //图片加载库  glide
     implementation ("com.github.bumptech.glide:glide:4.15.1")
@@ -51,6 +51,9 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
     //工具类
     implementation("com.blankj:utilcodex:1.31.1")
+
+//    implementation(project(mapOf("path" to ":super-resolution-core")))
+    implementation ("com.github.shougonyiren:superresolutioncore:0.0.6")
 
 
 

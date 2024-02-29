@@ -28,7 +28,6 @@ class NotificationsFragment : Fragment() {
 
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
         binding.testImage.loadSRImage(requireContext(), TestUtils.list[0])//.getThumbnailList(1000,1000)
 //        val textView: TextView = binding.textNotifications
 //        notificationsViewModel.text.observe(viewLifecycleOwner) {
